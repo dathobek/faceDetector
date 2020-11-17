@@ -39,6 +39,12 @@ class App extends Component {
     }
   }
 
+  // componentDidMount() {
+  //   fetch('http://localhost:3001')
+  //    .then(response => response.json())
+  //    .then(console.log)
+  // }
+
   calculateFaceLocation = (data) =>{
     const clarifiaFace = data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementById('inputImage');
@@ -74,22 +80,28 @@ class App extends Component {
   }
 
   onRouteChange =(route)=>{
+    if (route === 'signout'){
+      this.setState({isSignedIn: false})
+    } else if (route === 'home') {
+      this.setState({isSignedIn:true})
+    }
     this.setState({route: route});
   }
 
   render(){
+    const {isSignedIn,imageUrl,box} = this.state;
     return (
       <div className="App">
         <Particles className='particle'
           params ={particleOptions}
         />
-          <Navigation onRouteChange={this.onRouteChange}/>
+          <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange}/>
          { this.state.route === 'home' 
           ? <div>
           <Logo />
           <Rank/>
           <ImageLinkForm onInputChange={this.onInputChange} onButtonChange={this.onButtonChange}/>
-          <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl}/>
+          <FaceRecognition box={box} imageUrl={imageUrl}/>
          </div>
          : (  this.state.route === 'signin'
              ? <SignIn onRouteChange={this.onRouteChange}/> 
